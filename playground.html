@@ -15,7 +15,11 @@
     <h1>Hello world</h1>
 
     <div id="app">
-      {{message}}
+      <p v-if="message.length % 2 === 0">Even: {{message}}</p>
+      <p v-else>Odd: {{message.toUpperCase()}}</p>
+      <ul>
+        <li v-for="number in listOfNumbers">{{number}}</li>
+      </ul>
     </div>
 
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
@@ -26,6 +30,7 @@
         data() {
           return {
             message: 'Hello world from data',
+            listOfNumbers: [1, 2, 3, 4, 5],
           };
         },
       });
