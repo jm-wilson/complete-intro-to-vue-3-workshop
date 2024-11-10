@@ -1,0 +1,80 @@
+html {
+    color-scheme: dark light;
+    font-family: sans-serif;
+  }
+
+  h1 {
+    text-align: center;
+  }
+
+  .players-wrapper {
+    margin-inline: auto;
+    max-width: 1400px;
+    display: grid;
+    justify-content: center;
+    gap: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+
+    .not-found {
+        text-align: center;
+        color: firebrick;
+    }
+
+    .player {
+      background-color: powderblue;
+      @media (prefers-color-scheme: dark) {
+        background-color: darkblue;
+      }
+
+      border-radius: 10px;
+      padding: 15px;
+      position: relative;
+
+      h2,
+      aside {
+        display: inline-block;
+      }
+
+      h2 {
+        margin-block: 0.25em 0.125em;
+      }
+
+      aside {
+        margin-left: 0.25em;
+        opacity: 0.9;
+      }
+
+      .star {
+        font-size: 3em;
+        position: absolute;
+        top: 0;
+        right: 0;
+      }
+
+      dl {
+        dt, dd {
+            display: inline;
+        }
+
+        dt {
+            font-weight: 900;
+
+            &::after {
+                content: ':';
+            }
+        }
+
+        dd {
+            margin-left: 0.5em;
+
+            &::after {
+                content: '\A';
+                white-space: pre-line;
+            }
+            &:last-of-type:after {
+                content: '';
+            }
+        }
+      }
+    }
+  }
