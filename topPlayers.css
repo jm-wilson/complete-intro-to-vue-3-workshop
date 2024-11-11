@@ -1,80 +1,116 @@
 html {
-    color-scheme: dark light;
-    font-family: sans-serif;
+  color-scheme: dark light;
+  font-family: sans-serif;
+}
+
+body {
+  margin: 0;
+}
+
+#app {
+  margin-inline: auto;
+  max-width: 1600px;
+  max-height: 100vh;
+  display: flex;
+
+  & .pane {
+    margin: 5px;
+    border-radius: 5px;
+    padding: 15px;
+    border: 1px solid blue;
   }
 
-  h1 {
+  & .top-players-pane {
+    overflow: auto;
+    flex: 3 0;
+  }
+
+  & .utility-panes {
+    display: flex;
+    flex: 1 1;
+    flex-direction: column;
+  }
+}
+
+.top-players-grid {
+  display: grid;
+  justify-content: center;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+
+  .not-found {
     text-align: center;
+    color: firebrick;
   }
 
-  .players-wrapper {
-    margin-inline: auto;
-    max-width: 1400px;
-    display: grid;
-    justify-content: center;
-    gap: 10px;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-
-    .not-found {
-        text-align: center;
-        color: firebrick;
+  .player {
+    background-color: powderblue;
+    @media (prefers-color-scheme: dark) {
+      background-color: darkblue;
     }
 
-    .player {
-      background-color: powderblue;
-      @media (prefers-color-scheme: dark) {
-        background-color: darkblue;
+    border-radius: 10px;
+    padding: 15px;
+    position: relative;
+
+    .star {
+      font-size: 3em;
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
+
+    dl {
+      dt,
+      dd {
+        display: inline;
       }
 
-      border-radius: 10px;
-      padding: 15px;
-      position: relative;
+      dt {
+        font-weight: 900;
 
-      h2,
-      aside {
-        display: inline-block;
-      }
-
-      h2 {
-        margin-block: 0.25em 0.125em;
-      }
-
-      aside {
-        margin-left: 0.25em;
-        opacity: 0.9;
-      }
-
-      .star {
-        font-size: 3em;
-        position: absolute;
-        top: 0;
-        right: 0;
-      }
-
-      dl {
-        dt, dd {
-            display: inline;
+        &::after {
+          content: ':';
         }
+      }
 
-        dt {
-            font-weight: 900;
+      dd {
+        margin-left: 0.5em;
 
-            &::after {
-                content: ':';
-            }
+        &::after {
+          content: '\A';
+          white-space: pre-line;
         }
-
-        dd {
-            margin-left: 0.5em;
-
-            &::after {
-                content: '\A';
-                white-space: pre-line;
-            }
-            &:last-of-type:after {
-                content: '';
-            }
+        &:last-of-type:after {
+          content: '';
         }
       }
     }
   }
+}
+
+h2 {
+  text-align: center;
+}
+
+.player {
+  h3,
+  aside {
+    display: inline-block;
+  }
+
+  h3 {
+    margin-block: 0.25em 0.125em;
+  }
+
+  aside {
+    margin-left: 0.25em;
+    opacity: 0.9;
+  }
+}
+
+.add-player-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}

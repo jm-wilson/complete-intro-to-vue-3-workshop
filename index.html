@@ -9,28 +9,76 @@
   </head>
   <body>
     <div id="app">
-      <h1>Top players this week</h1>
-      <div class="players-wrapper">
-        <div v-if="players.length === 0" class="not-found">Top players were not found</div>
-        <div v-else class="player" v-for="player in players">
-          <div class="star" v-if="player.team === favoriteTeam">⭐</div>
+      <div class="pane top-players-pane">
+        <h2>Top players this week</h2>
+        <div class="top-players-grid">
+          <div v-if="players.length === 0" class="not-found">Top players were not found</div>
+          <div v-else class="player player--top" v-for="player in players">
+            <div class="star" v-if="player.team === favoriteTeam">⭐</div>
 
-          <h2>{{player.name}}</h2>
-          <aside v-if="player.captaincy === 'C'">(Captain)</aside>
-          <aside v-if="player.captaincy === 'A'">(Alternate Captain)</aside>
+            <h3>{{player.name}}</h3>
+            <aside v-if="player.captaincy === 'C'">(Captain)</aside>
+            <aside v-if="player.captaincy === 'A'">(Alternate Captain)</aside>
 
-          <dl>
-            <dt>Team</dt>
-            <dd>
-              {{player.team === favoriteTeam ? player.team.toUpperCase() + '!' : player.team}}
-            </dd>
+            <dl>
+              <dt>Team</dt>
+              <dd>
+                {{player.team === favoriteTeam ? player.team.toUpperCase() + '!' : player.team}}
+              </dd>
 
-            <dt>Position</dt>
-            <dd>{{player.position}}</dd>
+              <dt>Position</dt>
+              <dd>{{player.position}}</dd>
 
-            <dt>Goals this week</dt>
-            <dd>{{Math.floor(Math.random() * 4 + 2)}}</dd>
-          </dl>
+              <dt>Goals this week</dt>
+              <dd>{{Math.floor(Math.random() * 4 + 2)}}</dd>
+            </dl>
+            <button @click="addFavoritePlayer(player)">Add favorite</button>
+          </div>
+        </div>
+      </div>
+      <div class="utility-panes">
+        <!-- .prevent does the same as event.preventDefault() would -->
+        <form class="pane add-player-form" @submit.prevent="addPlayer">
+          <label>
+            Name:
+            <input v-model="newPlayer.name" type="text" name="name" id="name" />
+          </label>
+          <label>
+            Team:
+            <input v-model="newPlayer.team" type="text" name="team" id="team" />
+          </label>
+          <label>
+            Position:
+            <select v-model="newPlayer.position" name="position" id="position">
+              <option value="C">Center</option>
+              <option value="LW">Left Wing</option>
+              <option value="RW">Right Wing</option>
+              <option value="D">Defense</option>
+              <option value="G">Goaltender</option>
+            </select>
+          </label>
+          <label>
+            Number:
+            <input v-model="newPlayer.number" type="number" name="number" id="number" />
+          </label>
+          <label>
+            Captaincy:
+            <select v-model="newPlayer.captaincy" name="captaincy" id="captaincy">
+              <option value="C">Captain</option>
+              <option value="A">Alternate</option>
+              <option value="">N/A</option>
+            </select>
+          </label>
+          <button>Add player</button>
+        </form>
+        <div v-if="favoritePlayers.length > 0" class="pane favorite-players-pane">
+          <h2>Favorite players</h2>
+          <ul>
+            <li class="player player--favorite" v-for="player in favoritePlayers">
+              <h3>{{player.name}}</h3>
+              <aside>({{player.team}})</aside>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
@@ -39,7 +87,7 @@
     <script>
       const { createApp } = Vue;
 
-      const errorGettingPlayers = Math.random() > 0.8;
+      const errorGettingPlayers = Math.random() > 1; // Change to simulate intermittent errors
 
       const players = errorGettingPlayers
         ? []
@@ -66,7 +114,27 @@
           return {
             favoriteTeam: 'Pittsburgh',
             players,
+            favoritePlayers: [],
+            newPlayer: {},
           };
+        },
+        methods: {
+          addPlayer(event) {
+            // A real app might validate the new player before adding it
+
+            this.players.push(this.newPlayer);
+
+            // Clear the form by setting the bound variable to an empty object
+            this.newPlayer = {};
+            
+            // Move focus to the name field, found within the submitted form
+            event.target.querySelector('[name="name"]').focus();
+          },
+          addFavoritePlayer(player) {
+            // A real app might make sure the player isn't already a favorite, or store this data in a different format
+
+            this.favoritePlayers.push(player);
+          },
         },
       });
 
