@@ -1,47 +1,231 @@
-<script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+<script lang="ts">
+import { defineComponent } from 'vue';
+
+const errorGettingPlayers = Math.random() > 1; // Change to simulate intermittent errors
+
+type Player = {
+  name: string;
+  team: string;
+  position: string;
+  number?: number;
+  captaincy: string;
+};
+
+const players: Player[] = errorGettingPlayers
+  ? []
+  : [
+      { name: 'Crosby', team: 'Pittsburgh', position: 'C', number: 87, captaincy: 'C' },
+      { name: 'Malkin', team: 'Pittsburgh', position: 'C', number: 71, captaincy: 'A' },
+      { name: 'Luongo', team: 'Vancouver', position: 'G', number: 1, captaincy: 'C' },
+      { name: 'Kunitz', team: 'Pittsburgh', position: 'LW', number: 14, captaincy: '' },
+      { name: 'Letang', team: 'Pittsburgh', position: 'D', number: 58, captaincy: 'A' },
+      { name: 'Engelland', team: 'Pittsburgh', position: 'D', number: 5, captaincy: '' },
+      { name: 'Chara', team: 'Boston', position: 'D', number: 33, captaincy: 'C' },
+      { name: 'Blueger', team: 'Pittsburgh', position: 'C', number: 53, captaincy: '' },
+      { name: 'Miller', team: 'Vancouver', position: 'C', number: 9, captaincy: '' },
+      { name: 'Fleury', team: 'Pittsburgh', position: 'G', number: 29, captaincy: '' },
+      { name: 'McDavid', team: 'Edmonton', position: 'C', number: 97, captaincy: 'C' },
+      { name: 'Burns', team: 'Carolina', position: 'D', number: 88, captaincy: '' },
+      { name: 'Kessel', team: 'Pittsburgh', position: 'RW', number: 72, captaincy: '' },
+      { name: 'Talbot', team: 'Pittsburgh', position: 'C', number: 25, captaincy: '' },
+      { name: 'Kennedy', team: 'Pittsburgh', position: 'C', number: 48, captaincy: '' },
+    ];
+
+export default defineComponent({
+  data() {
+    return {
+      favoriteTeam: 'Pittsburgh',
+      players,
+      favoritePlayers: [] as Player[],
+      newPlayer: {
+        name: '',
+        team: '',
+        position: '',
+        number: undefined,
+        captaincy: '',
+      },
+    };
+  },
+  // Each computed property function begins with a log to easily see when they run
+  computed: {
+    // Something seems wrong about previous not having an inferred type
+    favoriteCaptains(previous: { favoriteCaptains: Player[] }): Player[] {
+      // This depends on favoritePlayers and runs every time a favorite is added
+      console.log('Recomputing favorite captains');
+      const newList = this.favoritePlayers.filter((player) => player.captaincy === 'C');
+
+      // It seems like previous is a proxy to an object containing all computeds/methods,
+      // so we really want to compare/return `previous.favoriteCaptains` and not `previous`.
+      // Is this inconsistent with the docs or am I reading them wrong?
+      //  https://vuejs.org/guide/essentials/computed.html#previous
+      console.log({ previousList: { ...previous.favoriteCaptains }, newList });
+
+      // Preserve the old reference if list length hasn't changed so dependents won't recompute
+      // Depending on the application, a more thorough deep equality check may be necessary
+      if (previous.favoriteCaptains && previous.favoriteCaptains.length === newList.length) {
+        console.log('Preserving previous favorite captains list');
+        return previous.favoriteCaptains;
+      }
+
+      console.log('Updated favorite captains list');
+      return newList;
+    },
+    totalFavoriteCaptains() {
+      // This depends on favoriteCaptains and runs every time a captain is added.
+      // It does not run if a non-captain is added, because favoriteCaptains will keep the same reference
+      console.log('Counting favorite captains');
+      return this.favoriteCaptains.length;
+    },
+    doubleTotalFavoriteCaptains() {
+      // This depends on totalFavoriteCaptains and runs every time a captain is added
+      // It does not run if a non-captain is added, because totalFavoriteCaptains remains unchanged
+      console.log('Doubling totalFavoriteCaptains');
+      return this.totalFavoriteCaptains * 2;
+    },
+    favoriteAlternates(): Player[] {
+      // This depends on favoritePlayers and runs every time a favorite is added
+      console.log('Recomputing favorite alternates');
+      return this.favoritePlayers.filter((player) => player.captaincy === 'A');
+    },
+    totalFavoriteAlternates() {
+      // This depends on favoriteAlternates and runs every time a favorite is added
+      // It runs even if a non-alternate is added because favoriteAlternates will have a new reference
+      console.log('Counting favorite alternates');
+      return this.favoriteAlternates.length;
+    },
+    doubleTotalFavoriteAlternates() {
+      // This depends on totalFavoriteAlternates and runs every time an alternate is added
+      // It does not run if a non-alternate is added, because totalFavoriteAlternates remains unchanged
+      console.log('Doubling totalFavoriteAlternates');
+      return this.totalFavoriteAlternates * 2;
+    },
+    // Calculating percents depends on the entire favorites array, so using those computed properties makes all others run again
+    // totalFavorites() {
+    //   // This depends on favoritePlayers and runs every time a favorite is added
+    //   console.log('Counting favorites');
+    //   return this.favoritePlayers.length;
+    // },
+    // favoritesPercentCaptains() {
+    //   console.log('Calculating % captains in favorites');
+    //   if (this.totalFavorites === 0) return 0; // Avoid divide by zero
+    //   return Math.round((this.totalFavoriteCaptains / this.totalFavorites) * 100);
+    // },
+    // favoritesPercentAlternates() {
+    //   console.log('Calculating % alternates in favorites');
+    //   if (this.totalFavorites === 0) return 0; // Avoid divide by zero
+    //   return Math.round((this.totalFavoriteAlternates / this.totalFavorites) * 100);
+    // },
+  },
+  methods: {
+    addPlayer(event: Event) {
+      // A real app might validate the new player before adding it
+
+      this.players.push(this.newPlayer);
+
+      // Clear the form by setting the bound variable to an empty object
+      this.newPlayer = {
+        name: '',
+        team: '',
+        position: '',
+        number: undefined,
+        captaincy: '',
+      };
+
+      // Move focus to the name field, found within the submitted form
+      const nameInput: HTMLInputElement | null = (event.target as HTMLElement).querySelector(
+        'input[name="name"]',
+      );
+      nameInput?.focus();
+    },
+    addFavoritePlayer(player: Player) {
+      // A real app might make sure the player isn't already a favorite, or store this data in a different format
+
+      this.favoritePlayers.push(player);
+    },
+  },
+});
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
+  <div class="pane top-players-pane">
+    <h2>Top players this week</h2>
+    <div class="top-players-grid">
+      <div v-if="players.length === 0" class="not-found">Top players were not found</div>
+      <div v-else class="player player--top" v-for="player in players" :key="player.name">
+        <div class="star" v-if="player.team === favoriteTeam">⭐</div>
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
+        <h3>{{ player.name }}</h3>
+        <aside v-if="player.captaincy === 'C'">(Captain)</aside>
+        <aside v-if="player.captaincy === 'A'">(Alternate Captain)</aside>
+
+        <dl>
+          <dt>Team</dt>
+          <dd>
+            {{ player.team === favoriteTeam ? player.team.toUpperCase() + '!' : player.team }}
+          </dd>
+
+          <dt>Position</dt>
+          <dd>{{ player.position }}</dd>
+
+          <dt>Goals this week</dt>
+          <dd>{{ Math.floor(Math.random() * 4 + 2) }}</dd>
+        </dl>
+        <button @click="addFavoritePlayer(player)">Add favorite</button>
+      </div>
     </div>
-  </header>
+  </div>
+  <div class="utility-panes">
+    <!-- .prevent does the same as event.preventDefault() would -->
+    <form class="pane add-player-form" @submit.prevent="addPlayer">
+      <label>
+        Name:
+        <input v-model="newPlayer.name" type="text" name="name" id="name" />
+      </label>
+      <label>
+        Team:
+        <input v-model="newPlayer.team" type="text" name="team" id="team" />
+      </label>
+      <label>
+        Position:
+        <select v-model="newPlayer.position" name="position" id="position">
+          <option value="C">Center</option>
+          <option value="LW">Left Wing</option>
+          <option value="RW">Right Wing</option>
+          <option value="D">Defense</option>
+          <option value="G">Goaltender</option>
+        </select>
+      </label>
+      <label>
+        Number:
+        <input v-model="newPlayer.number" type="number" name="number" id="number" />
+      </label>
+      <label>
+        Captaincy:
+        <select v-model="newPlayer.captaincy" name="captaincy" id="captaincy">
+          <option value="C">Captain</option>
+          <option value="A">Alternate</option>
+          <option value="">N/A</option>
+        </select>
+      </label>
+      <button>Add player</button>
+    </form>
+    <div v-if="favoritePlayers.length > 0" class="pane favorite-players-pane">
+      <h2>Favorite players</h2>
+      <dl>
+        <dt>Captains:</dt>
+        <dd>{{ totalFavoriteCaptains }} (double: {{ doubleTotalFavoriteCaptains }})</dd>
+        <!-- <dd>{{totalFavoriteCaptains}} ({{favoritesPercentCaptains}}%)</dd> -->
 
-  <main>
-    <TheWelcome />
-  </main>
+        <dt>Alternates:</dt>
+        <dd>{{ totalFavoriteAlternates }} (double: {{ doubleTotalFavoriteAlternates }})</dd>
+        <!-- <dd>{{totalFavoriteAlternates}} ({{favoritesPercentAlternates}}%)</dd> -->
+      </dl>
+      <ul>
+        <li class="player player--favorite" v-for="player in favoritePlayers" :key="player.name">
+          <h3>{{ player.name }}</h3>
+          <aside>({{ player.team }})</aside>
+        </li>
+      </ul>
+    </div>
+  </div>
 </template>
-
-<style scoped>
-header {
-  line-height: 1.5;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-}
-</style>
