@@ -113,4 +113,12 @@ h2 {
   display: flex;
   flex-direction: column;
   gap: 10px;
+
+  & :user-invalid {
+    border: 2px solid red;
+
+    label:has(&) {
+      color: red;
+    }
+  }
 }
