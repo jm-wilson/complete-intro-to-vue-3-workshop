@@ -33,12 +33,6 @@ export default defineComponent({
 </script>
 
 <style>
-.fullscreen-message {
-  display: grid;
-  place-content: center;
-  height: calc(100vh - 50px);
-  font-size: 3em;
-}
 
 .user-grid {
   display: grid;
