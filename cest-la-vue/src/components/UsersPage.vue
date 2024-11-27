@@ -50,7 +50,6 @@ export default defineComponent({
 <template>
   <div>
     <div class="fullscreen-message" v-if="errorGettingUsers">Error getting users</div>
-    <div class="fullscreen-message" v-else-if="users.length === 0">Loading users...</div>
     <div v-else>
       <h1>Users:</h1>
       <ul class="user-grid">
