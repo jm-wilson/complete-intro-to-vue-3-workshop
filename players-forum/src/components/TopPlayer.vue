@@ -1,22 +1,13 @@
-<script lang="ts">
+<script setup lang="ts">
 import type { Player } from '@/types';
-import type { PropType } from 'vue';
 
-export default {
-  props: {
-    player: {
-      type: Object as PropType<Player>,
-      required: true,
-    },
-    favoriteTeam: {
-      type: String,
-      default: '',
-    },
-  },
-  emits: {
-    addFavorite: true,
-  },
-};
+interface Props {
+  player: Player;
+  favoriteTeam: string;
+}
+
+const { player, favoriteTeam } = defineProps<Props>();
+const emit = defineEmits(['addFavorite']);
 </script>
 
 <template>
@@ -38,5 +29,5 @@ export default {
     <dt>Goals this week</dt>
     <dd>{{ Math.floor(Math.random() * 4 + 2) }}</dd>
   </dl>
-  <button @click="$emit('addFavorite', player)">Add favorite</button>
+  <button @click="emit('addFavorite', player)">Add favorite</button>
 </template>
