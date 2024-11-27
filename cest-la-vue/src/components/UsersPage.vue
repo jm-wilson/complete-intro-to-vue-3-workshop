@@ -4,42 +4,36 @@ import { JSONPlaceholderUser } from "../types";
 import UserCard from "./UserCard.vue";
 
 export default defineComponent({
-  components: { UserCard },
-  data() {
-    return {
-      users: [] as JSONPlaceholderUser[],
-      errorGettingUsers: false,
-    };
-  },
-  methods: {
-    async loadUsers() {
+  async setup() {
+    let users: JSONPlaceholderUser[] = [];
+    let errorGettingUsers = false;
+
+    if (!errorGettingUsers) {
       try {
+        // Artificial slowdown to see loading states
+        console.log("Waiting 500ms to show loading state...");
+        await new Promise((res) => setTimeout(res, 500));
+        console.log("Finished waiting 500ms");
+
         const response = await fetch("https://jsonplaceholder.typicode.com/users");
 
         if (!response?.ok) {
           throw Error("Error fetching users");
         }
 
-        this.users = await response.json();
+        users = await response.json();
       } catch {
-        this.errorGettingUsers = true;
+        errorGettingUsers = true;
       }
-    },
+    }
+
+    return { users, errorGettingUsers };
   },
-  created() {
-    this.loadUsers();
-  },
+  components: { UserCard },
 });
 </script>
 
 <style>
-.fullscreen-message {
-  display: grid;
-  place-content: center;
-  height: calc(100vh - 50px);
-  font-size: 3em;
-}
-
 .user-grid {
   display: grid;
   margin: 50px auto;
@@ -56,7 +50,6 @@ export default defineComponent({
 <template>
   <div>
     <div class="fullscreen-message" v-if="errorGettingUsers">Error getting users</div>
-    <div class="fullscreen-message" v-else-if="users.length === 0">Loading users...</div>
     <div v-else>
       <h1>Users:</h1>
       <ul class="user-grid">
