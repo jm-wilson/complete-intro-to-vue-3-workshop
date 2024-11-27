@@ -1,20 +1,12 @@
-<script lang="ts">
-import type { PropType } from "vue";
-import { defineComponent } from "vue";
+<script setup lang="ts">
 import { JSONPlaceholderUser } from "../types";
 
-export default defineComponent({
-  props: {
-    as: {
-      type: String as PropType<"div" | "li">,
-      default: "div",
-    },
-    user: {
-      type: Object as PropType<JSONPlaceholderUser>,
-      required: true,
-    },
-  },
-});
+interface Props {
+  as: "div" | "li";
+  user: JSONPlaceholderUser;
+}
+
+const { as = "li", user } = defineProps<Props>();
 </script>
 
 <style>

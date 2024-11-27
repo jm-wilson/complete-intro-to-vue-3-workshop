@@ -1,36 +1,29 @@
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
+import { reactive, ref } from "vue";
 import { JSONPlaceholderUser } from "../types";
 import UserCard from "./UserCard.vue";
 
-export default defineComponent({
-  async setup() {
-    let users: JSONPlaceholderUser[] = [];
-    let errorGettingUsers = false;
+let users = reactive<JSONPlaceholderUser[]>([]);
+let errorGettingUsers = ref<boolean>(false);
 
-    if (!errorGettingUsers) {
-      try {
-        // Artificial slowdown to see loading states
-        console.log("Waiting 500ms to show loading state...");
-        await new Promise((res) => setTimeout(res, 500));
-        console.log("Finished waiting 500ms");
+if (!errorGettingUsers.value) {
+  try {
+    // Artificial slowdown to see loading states
+    console.log("Waiting 500ms to show loading state...");
+    await new Promise((res) => setTimeout(res, 500));
+    console.log("Finished waiting 500ms");
 
-        const response = await fetch("https://jsonplaceholder.typicode.com/users");
+    const response = await fetch("https://jsonplaceholder.typicode.com/users");
 
-        if (!response?.ok) {
-          throw Error("Error fetching users");
-        }
-
-        users = await response.json();
-      } catch {
-        errorGettingUsers = true;
-      }
+    if (!response?.ok) {
+      throw Error("Error fetching users");
     }
 
-    return { users, errorGettingUsers };
-  },
-  components: { UserCard },
-});
+    users = await response.json();
+  } catch {
+    errorGettingUsers.value = true;
+  }
+}
 </script>
 
 <style>
