@@ -1,24 +1,14 @@
 <script setup lang="ts">
-import type { Player } from '@/types';
 import FavoritePlayersPane from './components/FavoritePlayersPane.vue';
 import TopPlayer from './components/TopPlayer.vue';
 import AddTopPlayerForm from './components/AddTopPlayerForm.vue';
 import { players } from '@/data/players';
 import BaseLayout from './components/BaseLayout.vue';
-import { reactive, ref } from 'vue';
+import { usePlayerList } from './composables/usePlayerList';
 
 const favoriteTeam = 'Pittsburgh';
-const favoritePlayers = reactive<Player[]>([]);
-const allPlayers = ref<Player[]>([...players]);
-
-function addPlayer(player: Player) {
-  allPlayers.value.push(player);
-}
-
-function addFavoritePlayer(player: Player) {
-  // A real app might make sure the player isn't already a favorite, or store this data in a different format
-  favoritePlayers.push(player);
-}
+const [favoritePlayers, addFavoritePlayer] = usePlayerList();
+const [allPlayers, addPlayer] = usePlayerList([...players]);
 </script>
 
 <template>
