@@ -18,6 +18,16 @@ export const router = createRouter({
     {
       path: "/users",
       component: () => import("@/views/UsersPage.vue"),
+      children: [
+        {
+          path: "",
+          component: () => import("@/components/UsersGrid.vue"),
+        },
+        {
+          path: ":id",
+          component: () => import("@/components/UserProfile.vue"),
+        },
+      ],
     },
   ],
 });
