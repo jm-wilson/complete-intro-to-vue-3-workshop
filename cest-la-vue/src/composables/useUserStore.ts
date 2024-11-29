@@ -1,5 +1,5 @@
 import { ref } from "vue";
-import { JSONPlaceholderUser } from "../types";
+import type { JSONPlaceholderUser } from "../types";
 
 export function useUserStore() {
   // Seems like we have to use separate refs here (not reactive) so we can update states separately
