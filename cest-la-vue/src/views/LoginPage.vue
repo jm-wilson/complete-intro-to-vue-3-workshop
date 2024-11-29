@@ -11,7 +11,7 @@ function onLogin(event: SubmitEvent) {
   // Let's pretend this is real auth
   const data = new FormData(event.target);
   const email = data.get("email");
-  const username = email.slice(0, email.toString().indexOf("@"));
+  const username = email?.slice(0, email.toString().indexOf("@"));
 
   router.push({ path: `/dashboard/${username}` });
 }

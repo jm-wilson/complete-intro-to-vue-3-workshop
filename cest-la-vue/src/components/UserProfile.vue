@@ -14,15 +14,17 @@ const user = users.find((user) => user.id === currentId);
   <div class="wrapper">
     <div class="flex">
       <RouterLink class="all-users-link" to="/users">Return to all users</RouterLink>
-      <h1>{{ user.name }}</h1>
+      <h1 v-if="user">{{ user.name }}</h1>
+      <h1 v-else>Error</h1>
     </div>
     <div class="card">
-      <dl>
+      <dl v-if="user">
         <div class="flex" v-for="(value, key) in user" :key="`${user.id}-${key}`">
           <dt>{{ key }}</dt>
           <dd>{{ value }}</dd>
         </div>
       </dl>
+      <div v-else>Error getting user data</div>
     </div>
   </div>
 </template>
