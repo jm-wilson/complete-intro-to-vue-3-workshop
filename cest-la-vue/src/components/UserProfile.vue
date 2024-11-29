@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import type { UsersPageComponentProps } from "@/types";
+import { useUserStore } from "@/stores/useUserStore";
+import { computed } from "vue";
 import { useRoute } from "vue-router";
 
 const route = useRoute();
-const idParam = route.params.id;
-const currentId = parseInt(Array.isArray(idParam) ? idParam[0] : idParam);
+const { userByIdParam } = useUserStore();
 
-const { users } = defineProps<UsersPageComponentProps>();
-const user = users.find((user) => user.id === currentId);
+// computed() ensures we get the new user if the route changes
+const user = computed(() => userByIdParam(route.params.id));
 </script>
 
 <template>

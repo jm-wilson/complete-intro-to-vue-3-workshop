@@ -1,7 +1,9 @@
 import { ref } from "vue";
 import type { JSONPlaceholderUser } from "../types";
+import { defineStore } from "pinia";
 
-export function useUserStore() {
+// We can pass a setup function into defineStore to use the composition API
+export const useUserStore = defineStore("UserStore", function () {
   // Seems like we have to use separate refs here (not reactive) so we can update states separately
   // https://router.vuejs.org/guide/advanced/data-fetching.html
   const users = ref<JSONPlaceholderUser[]>([]);
@@ -34,5 +36,10 @@ export function useUserStore() {
     }
   })();
 
-  return { users, loadingUsers, errorGettingUsers };
-}
+  function userByIdParam(idParam: string | string[]) {
+    const currentId = parseInt(Array.isArray(idParam) ? idParam[0] : idParam);
+    return users.value.find((user) => user.id === currentId);
+  }
+
+  return { users, loadingUsers, errorGettingUsers, userByIdParam };
+});

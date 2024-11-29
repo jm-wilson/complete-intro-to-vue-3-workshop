@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import type { UsersPageComponentProps } from "@/types";
+import { useUserStore } from "@/stores/useUserStore";
 import UserCard from "./UserCard.vue";
 
-const { users } = defineProps<UsersPageComponentProps>();
+// This doesn't to be reactive, because it:
+// 1. has to have loaded by the time this component renders, and
+// 2. won't be updated after the initial load
+const { users } = useUserStore();
 </script>
 
 <template>
