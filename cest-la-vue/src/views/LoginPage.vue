@@ -3,7 +3,7 @@ import { useRouter } from "vue-router";
 
 const router = useRouter();
 
-function onLogin(event: SubmitEvent) {
+function onLogin(event: Event) {
   if (!(event.target instanceof HTMLFormElement)) {
     throw new Error("Something hit onLogin that shouldn't have");
   }
@@ -11,7 +11,7 @@ function onLogin(event: SubmitEvent) {
   // Let's pretend this is real auth
   const data = new FormData(event.target);
   const email = data.get("email");
-  const username = email.slice(0, email.toString().indexOf("@"));
+  const username = email?.slice(0, email.toString().indexOf("@"));
 
   router.push({ path: `/dashboard/${username}` });
 }
