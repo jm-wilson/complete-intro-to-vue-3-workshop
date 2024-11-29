@@ -9,20 +9,8 @@
   </main>
 </template>
 
-<style>
-main {
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  max-width: 320px;
-  margin: 0 auto;
-}
-
-main h1 {
-  margin-top: 10vh;
-  margin-bottom: 20px;
-}
-
+<style scoped>
+/* scoped styles work well with generic selectors like elements, which would otherwise be very leaky */
 label {
   margin-bottom: 5px;
 }
