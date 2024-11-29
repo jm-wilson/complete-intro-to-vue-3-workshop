@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { useUserStore } from "../composables/useUserStore";
-import UserCard from "./UserCard.vue";
+import { useUserStore } from "@/composables/useUserStore";
+import UserCard from "@/components/UserCard.vue";
+import Loading from "@/components/Loading.vue";
 
-const { users, errorGettingUsers } = await useUserStore();
+const { users, loadingUsers, errorGettingUsers } = useUserStore();
 </script>
 
 <style module>
@@ -24,6 +25,7 @@ const { users, errorGettingUsers } = await useUserStore();
 <template>
   <div>
     <div class="fullscreen-message" v-if="errorGettingUsers">Error getting users</div>
+    <Loading v-else-if="loadingUsers" />
     <div v-else>
       <h1>Users:</h1>
       <ul :class="$style['user-grid']">
